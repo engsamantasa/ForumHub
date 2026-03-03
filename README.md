@@ -5,6 +5,7 @@
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
+
 ## 📌 Overview
 FórumHub is a RESTful API built with **Spring Boot** that replicates the back-end functionality of a discussion forum. It provides a secure platform where registered users can create, read, update, and delete (CRUD) topics related to specific courses.
 
