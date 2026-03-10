@@ -57,8 +57,61 @@ public class TopicoController {
     public ResponseEntity<Page<DadosListagemTopico>> listar(
             @PageableDefault(size = 10, sort = {"dataCriacao"}, direction = Sort.Direction.ASC) Pageable paginacao) {
 
-        var page = topicoRepository.findAll(paginacao).map(DadosListagemTopico::new);
+        var page = topicoRepository.findAllByAtivoTrue(paginacao).map(DadosListagemTopico::new);
 
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id) {
+
+        var topicoPesquisado = topicoRepository.findById(id);
+
+
+        if (topicoPesquisado.isPresent()) {
+            var topico = topicoPesquisado.get();
+            return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
+        }
+
+
+        return ResponseEntity.notFound().build();
+    }
+
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados) {
+
+        var topicoOptional = topicoRepository.findById(id);
+
+        if (topicoOptional.isPresent()) {
+
+            if (topicoRepository.existsByTituloAndMensagem(dados.titulo(), dados.mensagem())) {
+                return ResponseEntity.badRequest().body("Já existe um tópico com este mesmo título e mensagem.");
+            }
+
+            var topico = topicoOptional.get();
+            topico.atualizarInformacoes(dados);
+
+            return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluir(@PathVariable Long id) {
+        var topicoOptional = topicoRepository.findById(id);
+
+        if (topicoOptional.isPresent()) {
+            var topico = topicoOptional.get();
+            topico.excluir();
+
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }

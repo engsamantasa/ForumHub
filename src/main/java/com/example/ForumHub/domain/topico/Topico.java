@@ -28,6 +28,7 @@ public class Topico {
     private LocalDateTime dataCriacao;
 
     private String status;
+    private Boolean ativo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "autor_id")
@@ -39,6 +40,7 @@ public class Topico {
 
 
     public Topico(DadosCadastroTopico dados, Usuario autor, Curso curso) {
+        this.ativo = true;
         this.titulo = dados.titulo();
         this.mensagem = dados.mensagem();
         this.dataCriacao = LocalDateTime.now();
@@ -46,4 +48,19 @@ public class Topico {
         this.autor = autor;
         this.curso = curso;
     }
+
+    public void atualizarInformacoes(DadosAtualizacaoTopico dados) {
+        if (dados.titulo() != null) {
+            this.titulo = dados.titulo();
+        }
+        if (dados.mensagem() != null) {
+            this.mensagem = dados.mensagem();
+        }
+    }
+
+
+    public void excluir() {
+        this.ativo = false;
+    }
+
 }
